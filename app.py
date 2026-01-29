@@ -35,7 +35,7 @@ monthly_charges = st.number_input(
 )
 
 if st.button("Xác nhận thông tin"):
-    st.subheader("Dữ liệu đã nhập")
+    st.subheader("Dữ liệu đã nhập:")
     st.write({
         "Giới tính": gender,
         "Thời gian sử dụng": tenure,
