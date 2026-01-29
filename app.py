@@ -1,137 +1,186 @@
 import streamlit as st
 
 # =========================
-# CẤU HÌNH TRANG
+# CẤU HÌNH TRANG (SỬA ICON TAB)
 # =========================
 st.set_page_config(
     page_title="Dự đoán khách hàng rời bỏ dịch vụ",
+    page_icon="📡",
     layout="wide"
 )
 
 # =========================
-# LOGO (FPT / TELCO)
+# SIDEBAR
 # =========================
-st.image(
-    "https://upload.wikimedia.org/wikipedia/commons/5/5c/FPT_logo_2010.svg",
-    width=180
+st.sidebar.image(
+    "https://cdn-icons-png.flaticon.com/512/3059/3059446.png",
+    width=120
 )
 
-st.markdown(
-    "<h1 style='text-align: center;'>DỰ ĐOÁN KHÁCH HÀNG RỜI BỎ DỊCH VỤ</h1>",
-    unsafe_allow_html=True
-)
+st.sidebar.subheader("⚙️ Chọn mô hình")
 
-st.markdown(
-    "<p style='text-align: center;'>Hệ thống demo ứng dụng học máy trong cảnh báo sớm customer churn</p>",
-    unsafe_allow_html=True
-)
-
-st.markdown("---")
-
-# =========================
-# CHỌN MÔ HÌNH
-# =========================
-st.subheader("⚙️ Lựa chọn mô hình học máy")
-
-model_name = st.radio(
+model_name = st.sidebar.selectbox(
     "",
-    ["KNN", "SVM", "Random Forest"],
-    horizontal=True
+    ["KNN", "SVM", "Random Forest"]
 )
+
+st.sidebar.markdown("---")
+
+st.sidebar.subheader("📘 Hướng dẫn sử dụng")
+st.sidebar.markdown("""
+1. Chọn mô hình học máy  
+2. Nhập thông tin khách hàng  
+3. Nhấn **Dự đoán** để xem kết quả  
+""")
+
+# =========================
+# TITLE
+# =========================
+col_title1, col_title2 = st.columns([1, 10])
+
+with col_title1:
+    st.image(
+        "https://cdn-icons-png.flaticon.com/512/1041/1041916.png",
+        width=60
+    )
+
+with col_title2:
+    st.markdown(
+        "<h1>DỰ ĐOÁN KHÁCH HÀNG RỜI BỎ DỊCH VỤ</h1>",
+        unsafe_allow_html=True
+    )
 
 st.markdown("---")
 
 # =========================
 # THÔNG TIN KHÁCH HÀNG
 # =========================
-st.subheader("🧾 Thông tin khách hàng")
+st.markdown(
+    "<div style='background-color:#e8f4fa;padding:15px;border-radius:10px'>"
+    "<h3>🧾 Thông tin khách hàng</h3>",
+    unsafe_allow_html=True
+)
 
-col1, col2, col3 = st.columns(3)
+c1, c2, c3, c4, c5 = st.columns(5)
 
-with col1:
-    gender_vi = st.selectbox("Giới tính", ["Nam", "Nữ"])
-    senior_vi = st.selectbox("Khách hàng cao tuổi", ["Không", "Có"])
-    partner_vi = st.selectbox("Có người thân đi kèm", ["Không", "Có"])
-    dependents_vi = st.selectbox("Có người phụ thuộc", ["Không", "Có"])
+gender = c1.selectbox("Giới tính", ["Nam", "Nữ"])
+senior = c2.selectbox("Khách hàng cao tuổi", ["Không", "Có"])
+partner = c3.selectbox("Có người thân", ["Không", "Có"])
+dependents = c4.selectbox("Có người phụ thuộc", ["Không", "Có"])
+tenure = c5.number_input(
+    "Thời gian sử dụng (tháng)",
+    min_value=0,
+    max_value=72,
+    step=5,
+    value=12
+)
 
-with col2:
-    tenure = st.number_input(
-        "Thời gian sử dụng dịch vụ (tháng)",
-        min_value=0,
-        max_value=120,
-        step=5,
-        value=12
-    )
-    phone_vi = st.selectbox("Sử dụng dịch vụ điện thoại", ["Có", "Không"])
-    multi_vi = st.selectbox("Nhiều đường dây", ["Không", "Có"])
+c6, c7, c8, c9, c10 = st.columns(5)
 
-with col3:
-    internet = st.selectbox(
-        "Dịch vụ Internet",
-        ["DSL", "Cáp quang", "Không sử dụng"]
-    )
-    contract = st.selectbox(
-        "Loại hợp đồng",
-        ["Theo tháng", "1 năm", "2 năm"]
-    )
-    paperless_vi = st.selectbox("Hóa đơn điện tử", ["Có", "Không"])
+phone = c6.selectbox("Dịch vụ điện thoại", ["Có", "Không"])
+multiple_lines = c7.selectbox(
+    "Nhiều đường dây",
+    ["Không", "Có", "Không có DV điện thoại"]
+)
+internet = c8.selectbox(
+    "Internet",
+    ["DSL", "Cáp quang", "Không sử dụng"]
+)
+contract = c9.selectbox(
+    "Hợp đồng",
+    ["Theo tháng", "1 năm", "2 năm"]
+)
+paperless = c10.selectbox(
+    "Hóa đơn điện tử",
+    ["Có", "Không"]
+)
+
+st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("")
 
 # =========================
-# DỊCH VỤ BỔ SUNG
+# DỊCH VỤ GIA TĂNG
 # =========================
-st.subheader("📡 Dịch vụ gia tăng")
+st.markdown(
+    "<div style='background-color:#eaf7ee;padding:15px;border-radius:10px'>"
+    "<h3>📡 Dịch vụ gia tăng</h3>",
+    unsafe_allow_html=True
+)
 
-col4, col5, col6 = st.columns(3)
+d1, d2, d3 = st.columns(3)
 
-with col4:
-    online_security = st.selectbox("Bảo mật trực tuyến", ["Không", "Có"])
-    online_backup = st.selectbox("Sao lưu trực tuyến", ["Không", "Có"])
+online_security = d1.selectbox(
+    "Bảo mật trực tuyến",
+    ["Không", "Có", "Không có Internet"]
+)
+online_backup = d2.selectbox(
+    "Sao lưu trực tuyến",
+    ["Không", "Có", "Không có Internet"]
+)
+device_protection = d3.selectbox(
+    "Bảo vệ thiết bị",
+    ["Không", "Có", "Không có Internet"]
+)
 
-with col5:
-    device_protection = st.selectbox("Bảo vệ thiết bị", ["Không", "Có"])
-    tech_support = st.selectbox("Hỗ trợ kỹ thuật", ["Không", "Có"])
+d4, d5, d6 = st.columns(3)
 
-with col6:
-    streaming_tv = st.selectbox("Truyền hình trực tuyến", ["Không", "Có"])
-    streaming_movies = st.selectbox("Phim trực tuyến", ["Không", "Có"])
+tech_support = d4.selectbox(
+    "Hỗ trợ kỹ thuật",
+    ["Không", "Có", "Không có Internet"]
+)
+streaming_tv = d5.selectbox(
+    "Truyền hình trực tuyến",
+    ["Không", "Có", "Không có Internet"]
+)
+streaming_movies = d6.selectbox(
+    "Phim trực tuyến",
+    ["Không", "Có", "Không có Internet"]
+)
+
+st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("")
 
 # =========================
 # THANH TOÁN
 # =========================
-st.subheader("💰 Thông tin thanh toán")
+st.markdown(
+    "<div style='background-color:#eef3fb;padding:15px;border-radius:10px'>"
+    "<h3>💰 Thông tin thanh toán</h3>",
+    unsafe_allow_html=True
+)
 
-col7, col8 = st.columns(2)
+p1, p2, p3 = st.columns(3)
 
-with col7:
-    payment_method = st.selectbox(
-        "Hình thức thanh toán",
-        [
-            "Hóa đơn điện tử",
-            "Hóa đơn gửi bưu điện",
-            "Chuyển khoản ngân hàng",
-            "Thẻ tín dụng"
-        ]
-    )
+payment_method = p1.selectbox(
+    "Hình thức thanh toán",
+    [
+        "Hóa đơn điện tử",
+        "Hóa đơn bưu điện",
+        "Chuyển khoản ngân hàng",
+        "Thẻ tín dụng"
+    ]
+)
 
-with col8:
-    monthly_charges = st.number_input(
-        "Chi phí hàng tháng",
-        min_value=0.0,
-        step=10.0,
-        value=70.0
-    )
-    total_charges = st.number_input(
-        "Tổng chi phí",
-        min_value=0.0,
-        step=50.0,
-        value=1000.0
-    )
+monthly_charges = p2.number_input(
+    "Chi phí hàng tháng",
+    min_value=0.0,
+    step=10.0,
+    value=70.0
+)
+
+total_charges = p3.number_input(
+    "Tổng chi phí",
+    min_value=0.0,
+    step=50.0,
+    value=1000.0
+)
+
+st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("")
 
 # =========================
 # NÚT DỰ ĐOÁN
 # =========================
-st.markdown("---")
-
-if st.button("🔍 DỰ ĐOÁN NGUY CƠ RỜI BỎ", use_container_width=True):
-    st.success(f"Yêu cầu dự đoán đã được gửi bằng mô hình **{model_name}**")
-    st.info("Chức năng dự đoán sẽ được tích hợp mô hình học máy ở bước tiếp theo.")
+if st.button("🔍 Dự đoán"):
+    st.success(f"Đã gửi yêu cầu dự đoán bằng mô hình **{model_name}**")
+    st.info("Kết quả dự đoán sẽ được hiển thị khi tích hợp mô hình học máy.")
