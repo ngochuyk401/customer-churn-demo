@@ -1,35 +1,50 @@
 import streamlit as st
 
+# =========================
+# CẤU HÌNH TRANG
+# =========================
 st.set_page_config(
-    page_title="Hệ thống cảnh báo khách hàng rời bỏ dịch vụ",
+    page_title="Dự đoán khách hàng rời bỏ dịch vụ",
     layout="wide"
 )
 
-st.title("📊 HỆ THỐNG CẢNH BÁO SỚM KHÁCH HÀNG RỜI BỎ DỊCH VỤ")
+# =========================
+# LOGO (FPT / TELCO)
+# =========================
+st.image(
+    "https://upload.wikimedia.org/wikipedia/commons/5/5c/FPT_logo_2010.svg",
+    width=180
+)
 
 st.markdown(
-    """
-    Ứng dụng demo hỗ trợ nhà quản lý dự đoán nguy cơ khách hàng rời bỏ dịch vụ 
-    dựa trên các mô hình học máy.
-    """
+    "<h1 style='text-align: center;'>DỰ ĐOÁN KHÁCH HÀNG RỜI BỎ DỊCH VỤ</h1>",
+    unsafe_allow_html=True
 )
 
-# SIDEBAR - CHỌN MÔ HÌNH
-
-st.sidebar.header("⚙️ Cấu hình dự đoán")
-
-model_name = st.sidebar.selectbox(
-    "Chọn mô hình học máy",
-    ["KNN", "SVM", "Random Forest"]
+st.markdown(
+    "<p style='text-align: center;'>Hệ thống demo ứng dụng học máy trong cảnh báo sớm customer churn</p>",
+    unsafe_allow_html=True
 )
 
-st.sidebar.info(
-    f"Mô hình đang được chọn: **{model_name}**"
+st.markdown("---")
+
+# =========================
+# CHỌN MÔ HÌNH
+# =========================
+st.subheader("⚙️ Lựa chọn mô hình học máy")
+
+model_name = st.radio(
+    "",
+    ["KNN", "SVM", "Random Forest"],
+    horizontal=True
 )
 
-# FORM NHẬP THÔNG TIN
+st.markdown("---")
 
-st.header("🧾 Nhập thông tin khách hàng")
+# =========================
+# THÔNG TIN KHÁCH HÀNG
+# =========================
+st.subheader("🧾 Thông tin khách hàng")
 
 col1, col2, col3 = st.columns(3)
 
@@ -43,14 +58,15 @@ with col2:
     tenure = st.number_input(
         "Thời gian sử dụng dịch vụ (tháng)",
         min_value=0,
-        max_value=100,
+        max_value=120,
+        step=5,
         value=12
     )
-    phone_service_vi = st.selectbox("Sử dụng dịch vụ điện thoại", ["Không", "Có"])
-    multiple_lines_vi = st.selectbox("Nhiều đường dây", ["Không", "Có"])
+    phone_vi = st.selectbox("Sử dụng dịch vụ điện thoại", ["Có", "Không"])
+    multi_vi = st.selectbox("Nhiều đường dây", ["Không", "Có"])
 
 with col3:
-    internet_service = st.selectbox(
+    internet = st.selectbox(
         "Dịch vụ Internet",
         ["DSL", "Cáp quang", "Không sử dụng"]
     )
@@ -58,6 +74,35 @@ with col3:
         "Loại hợp đồng",
         ["Theo tháng", "1 năm", "2 năm"]
     )
+    paperless_vi = st.selectbox("Hóa đơn điện tử", ["Có", "Không"])
+
+# =========================
+# DỊCH VỤ BỔ SUNG
+# =========================
+st.subheader("📡 Dịch vụ gia tăng")
+
+col4, col5, col6 = st.columns(3)
+
+with col4:
+    online_security = st.selectbox("Bảo mật trực tuyến", ["Không", "Có"])
+    online_backup = st.selectbox("Sao lưu trực tuyến", ["Không", "Có"])
+
+with col5:
+    device_protection = st.selectbox("Bảo vệ thiết bị", ["Không", "Có"])
+    tech_support = st.selectbox("Hỗ trợ kỹ thuật", ["Không", "Có"])
+
+with col6:
+    streaming_tv = st.selectbox("Truyền hình trực tuyến", ["Không", "Có"])
+    streaming_movies = st.selectbox("Phim trực tuyến", ["Không", "Có"])
+
+# =========================
+# THANH TOÁN
+# =========================
+st.subheader("💰 Thông tin thanh toán")
+
+col7, col8 = st.columns(2)
+
+with col7:
     payment_method = st.selectbox(
         "Hình thức thanh toán",
         [
@@ -68,55 +113,25 @@ with col3:
         ]
     )
 
-monthly_charges = st.number_input(
-    "Chi phí hàng tháng",
-    min_value=0.0,
-    value=70.0
-)
+with col8:
+    monthly_charges = st.number_input(
+        "Chi phí hàng tháng",
+        min_value=0.0,
+        step=10.0,
+        value=70.0
+    )
+    total_charges = st.number_input(
+        "Tổng chi phí",
+        min_value=0.0,
+        step=50.0,
+        value=1000.0
+    )
 
-total_charges = st.number_input(
-    "Tổng chi phí",
-    min_value=0.0,
-    value=1000.0
-)
-
+# =========================
 # NÚT DỰ ĐOÁN
-
+# =========================
 st.markdown("---")
 
-if st.button("🔍 DỰ ĐOÁN NGUY CƠ RỜI BỎ"):
-    st.subheader("📌 Thông tin đã nhập")
-
-    # Map tiếng Việt -> giá trị gốc
-    input_data = {
-        "gender": "Male" if gender_vi == "Nam" else "Female",
-        "SeniorCitizen": 1 if senior_vi == "Có" else 0,
-        "Partner": "Yes" if partner_vi == "Có" else "No",
-        "Dependents": "Yes" if dependents_vi == "Có" else "No",
-        "tenure": tenure,
-        "PhoneService": "Yes" if phone_service_vi == "Có" else "No",
-        "MultipleLines": "Yes" if multiple_lines_vi == "Có" else "No",
-        "InternetService": (
-            "No" if internet_service == "Không sử dụng" else internet_service
-        ),
-        "Contract": {
-            "Theo tháng": "Month-to-month",
-            "1 năm": "One year",
-            "2 năm": "Two year"
-        }[contract],
-        "PaymentMethod": {
-            "Hóa đơn điện tử": "Electronic check",
-            "Hóa đơn gửi bưu điện": "Mailed check",
-            "Chuyển khoản ngân hàng": "Bank transfer (automatic)",
-            "Thẻ tín dụng": "Credit card (automatic)"
-        }[payment_method],
-        "MonthlyCharges": monthly_charges,
-        "TotalCharges": total_charges
-    }
-
-    st.json(input_data)
-
-    st.success(
-        f"Yêu cầu dự đoán đã được gửi bằng mô hình **{model_name}** "
-        "(chức năng dự đoán sẽ được tích hợp ở bước tiếp theo)."
-    )
+if st.button("🔍 DỰ ĐOÁN NGUY CƠ RỜI BỎ", use_container_width=True):
+    st.success(f"Yêu cầu dự đoán đã được gửi bằng mô hình **{model_name}**")
+    st.info("Chức năng dự đoán sẽ được tích hợp mô hình học máy ở bước tiếp theo.")
