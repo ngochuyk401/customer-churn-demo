@@ -4,25 +4,6 @@ import pandas as pd
 from models.model_loader import load_model
 
 
-def interpret_result(prob):
-    if prob < 0.3:
-        level = "Thấp"
-        message = "Khách hàng có xu hướng tiếp tục sử dụng dịch vụ."
-        advice = "Không cần can thiệp ngay, tiếp tục duy trì chất lượng dịch vụ."
-        color = "green"
-    elif prob < 0.6:
-        level = "Trung bình"
-        message = "Khách hàng có dấu hiệu cân nhắc rời bỏ dịch vụ."
-        advice = "Nên theo dõi và chủ động chăm sóc, tư vấn gói dịch vụ phù hợp."
-        color = "orange"
-    else:
-        level = "Cao"
-        message = "Khách hàng có nguy cơ rời bỏ dịch vụ cao."
-        advice = "Cần có biện pháp giữ chân như ưu đãi, hỗ trợ kỹ thuật hoặc chăm sóc đặc biệt."
-        color = "red"
-
-    return level, message, advice, color
-
 # =========================
 # CẤU HÌNH TRANG (SỬA ICON TAB)
 # =========================
@@ -251,34 +232,22 @@ if st.button("🔍 Dự đoán"):
     model = load_model(model_name)
     prediction = model.predict(processed_df)[0]
 
-    if hasattr(model, "predict_proba"):
-        prob = model.predict_proba(processed_df)[0][1]
-    else:
-        prob = None
-
     # =========================
     # 5. Hiển thị kết quả
     # =========================
     st.subheader("📊 Kết quả dự đoán")
 
-    if prob is not None:
-        level, message, advice, color = interpret_result(prob)
-
-        if color == "green":
-            st.success(f"🟢 Mức độ rủi ro: {level}")
-        elif color == "orange":
-            st.warning(f"🟡 Mức độ rủi ro: {level}")
-        else:
-            st.error(f"🔴 Mức độ rủi ro: {level}")
-
-        st.write(f"**Xác suất rời bỏ dịch vụ:** {prob:.2%}")
-        st.write(f"**Nhận định:** {message}")
-        st.write(f"**Khuyến nghị:** {advice}")
+    if prediction == 1:
+        st.error("⚠️ Khách hàng CÓ NGUY CƠ rời bỏ dịch vụ")
+        st.write(
+            "💡 **Khuyến nghị:** Doanh nghiệp nên xem xét các biện pháp giữ chân "
+            "như ưu đãi giá cước, chăm sóc khách hàng hoặc hỗ trợ kỹ thuật."
+        )
     else:
-        if prediction == 1:
-            st.error("⚠️ Khách hàng có nguy cơ rời bỏ dịch vụ")
-        else:
-            st.success("✅ Khách hàng không có nguy cơ rời bỏ dịch vụ")
+        st.success("✅ Khách hàng KHÔNG có nguy cơ rời bỏ dịch vụ")
+        st.write(
+            "💡 **Khuyến nghị:** Tiếp tục duy trì chất lượng dịch vụ và chính sách chăm sóc hiện tại."
+        )
 
 
 
