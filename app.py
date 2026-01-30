@@ -1,10 +1,10 @@
 import streamlit as st
-import pandas as pd
 from preprocessing.preprocess import preprocess_input
+import pandas as pd
 from models.model_loader import load_model
 
 # =========================
-# CẤU HÌNH TRANG
+# CẤU HÌNH TRANG (SỬA ICON TAB)
 # =========================
 st.set_page_config(
     page_title="Dự đoán khách hàng rời bỏ dịch vụ",
@@ -16,8 +16,8 @@ st.set_page_config(
 # SIDEBAR
 # =========================
 st.sidebar.image(
-    "https://upload.wikimedia.org/wikipedia/commons/6/63/FPT_logo_2010.svg",
-    width=160
+    "https://cdn-icons-png.flaticon.com/512/3059/3059446.png",
+    width=120
 )
 
 st.sidebar.subheader("⚙️ Chọn mô hình")
@@ -186,6 +186,9 @@ st.markdown("")
 # =========================
 if st.button("🔍 Dự đoán"):
 
+    # =========================
+    # 1. Gom dữ liệu đầu vào
+    # =========================
     input_data = {
         'gender': gender,
         'SeniorCitizen': senior,
@@ -208,27 +211,40 @@ if st.button("🔍 Dự đoán"):
         'TotalCharges': total_charges
     }
 
+    # =========================
+    # 2. Hiển thị dữ liệu đã nhập (đối chiếu)
+    # =========================
     with st.expander("🧾 Thông tin khách hàng đã nhập"):
         st.dataframe(pd.DataFrame([input_data]))
 
+    # =========================
+    # 3. Tiền xử lý
+    # =========================
     processed_df = preprocess_input(input_data)
 
-    with st.expander("📄 Dữ liệu sau tiền xử lý (đầu vào mô hình)"):
+    with st.expander("📄 Dữ liệu sau tiền xử lý (đầu vào của mô hình)"):
         st.dataframe(processed_df)
 
+    # =========================
+    # 4. Load mô hình & dự đoán
+    # =========================
     model = load_model(model_name)
     prediction = model.predict(processed_df)[0]
 
+    # =========================
+    # 5. Hiển thị kết quả
+    # =========================
     st.subheader("📊 Kết quả dự đoán")
 
     if prediction == 1:
         st.error("⚠️ Khách hàng CÓ NGUY CƠ rời bỏ dịch vụ")
         st.write(
-            "💡 **Khuyến nghị:** Doanh nghiệp nên xem xét ưu đãi, chăm sóc khách hàng "
-            "hoặc hỗ trợ kỹ thuật để giữ chân khách hàng."
+            "💡 **Khuyến nghị:** Doanh nghiệp nên xem xét các biện pháp giữ chân "
+            "như ưu đãi giá cước, chăm sóc khách hàng hoặc hỗ trợ kỹ thuật."
         )
     else:
         st.success("✅ Khách hàng KHÔNG có nguy cơ rời bỏ dịch vụ")
         st.write(
             "💡 **Khuyến nghị:** Tiếp tục duy trì chất lượng dịch vụ và chính sách chăm sóc hiện tại."
         )
+
