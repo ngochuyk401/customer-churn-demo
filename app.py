@@ -280,3 +280,27 @@ if st.button("🔍 Dự đoán"):
             f"**Ngưỡng quyết định:** {threshold*100:.0f}%"
         )
 
+
+
+    # # =========================
+    # # 4. Load mô hình & dự đoán
+    # # =========================
+    # model = load_model(model_name)
+    # prediction = model.predict(processed_df)[0]
+    #
+    # # =========================
+    # # 5. Hiển thị kết quả
+    # # =========================
+    # st.subheader("📊 Kết quả dự đoán")
+    #
+    # if prediction == 1:
+    #     st.error("⚠️ Khách hàng CÓ NGUY CƠ rời bỏ dịch vụ")
+    #     st.write(
+    #         "💡 **Khuyến nghị:** Doanh nghiệp nên xem xét các biện pháp giữ chân "
+    #         "như ưu đãi giá cước, chăm sóc khách hàng hoặc hỗ trợ kỹ thuật."
+    #     )
+    # else:
+    #     st.success("✅ Khách hàng KHÔNG có nguy cơ rời bỏ dịch vụ")
+    #     st.write(
+    #         "💡 **Khuyến nghị:** Tiếp tục duy trì chất lượng dịch vụ và chính sách chăm sóc hiện tại."
+    #     )
