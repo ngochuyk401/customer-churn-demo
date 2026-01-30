@@ -1,5 +1,7 @@
 import streamlit as st
 from preprocessing.preprocess import preprocess_input
+import pandas as pd
+from models.model_loader import load_model
 
 
 def interpret_result(prob):
@@ -246,7 +248,7 @@ if st.button("🔍 Dự đoán"):
     # =========================
     # 4. Load mô hình & dự đoán
     # =========================
-    model = load_model(selected_model)
+    model = load_model(model_name)
     prediction = model.predict(processed_df)[0]
 
     if hasattr(model, "predict_proba"):
