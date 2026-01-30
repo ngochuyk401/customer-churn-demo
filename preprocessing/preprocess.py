@@ -20,6 +20,10 @@ EXPECTED_COLUMNS = [
 ]
 
 def preprocess_input(data: dict) -> pd.DataFrame:
+    """
+    Chuyển input từ form (dict tiếng Việt) thành DataFrame dummy đúng với model.
+    Mapping phải khớp chính xác với selectbox trong app.py.
+    """
     df = pd.DataFrame([data])
 
     # ---------------------
@@ -28,7 +32,7 @@ def preprocess_input(data: dict) -> pd.DataFrame:
     df['gender_Male'] = 1 if df.loc[0, 'gender'] == 'Nam' else 0
 
     # ---------------------
-    # Yes / No đơn giản
+    # Yes/No đơn giản
     # ---------------------
     yes_cols = ['Partner', 'Dependents', 'PhoneService', 'PaperlessBilling']
     for col in yes_cols:
@@ -52,41 +56,46 @@ def preprocess_input(data: dict) -> pd.DataFrame:
     df['InternetService_No'] = 1 if df.loc[0, 'InternetService'] == 'Không' else 0
 
     # ---------------------
-    # Các dịch vụ Internet
+    # Các dịch vụ Internet (OnlineSecurity, OnlineBackup, ...)
     # ---------------------
     internet_services = [
-        'OnlineSecurity', 'OnlineBackup',
-        'DeviceProtection', 'TechSupport',
-        'StreamingTV', 'StreamingMovies'
+        'OnlineSecurity', 'OnlineBackup', 'DeviceProtection',
+        'TechSupport', 'StreamingTV', 'StreamingMovies'
     ]
 
     for col in internet_services:
-        df[f'{col}_Yes'] = 1 if df.loc[0, col] == 'Có' else 0
-        df[f'{col}_No internet service'] = 1 if df.loc[0, col] == 'Không có Internet' else 0
+        value = df.loc[0, col]
+        df[f'{col}_Yes'] = 1 if value == 'Có' else 0
+        df[f'{col}_No internet service'] = 1 if value == 'Không có Internet' else 0
+        # Nếu chọn "Không" → cả hai dummy = 0 → tương đương No (không có dịch vụ)
 
     # ---------------------
     # Contract
     # ---------------------
     df['Contract_One year'] = 1 if df.loc[0, 'Contract'] == '1 năm' else 0
     df['Contract_Two year'] = 1 if df.loc[0, 'Contract'] == '2 năm' else 0
+    # "Theo tháng" → cả hai dummy = 0 → Month-to-month (đúng, vì drop_first=True)
 
     # ---------------------
-    # Payment Method
+    # PaymentMethod - PHẦN QUAN TRỌNG NHẤT ĐÃ SỬA
     # ---------------------
-    df['PaymentMethod_Credit card (automatic)'] = 1 if df.loc[0, 'PaymentMethod'] == 'Thẻ tín dụng (tự động)' else 0
-    df['PaymentMethod_Electronic check'] = 1 if df.loc[0, 'PaymentMethod'] == 'Séc điện tử' else 0
-    df['PaymentMethod_Mailed check'] = 1 if df.loc[0, 'PaymentMethod'] == 'Séc gửi thư' else 0
+    payment = df.loc[0, 'PaymentMethod']
+    df['PaymentMethod_Electronic check'] = 1 if payment == 'Hóa đơn điện tử' else 0
+    df['PaymentMethod_Mailed check'] = 1 if payment == 'Hóa đơn bưu điện' else 0
+    df['PaymentMethod_Credit card (automatic)'] = 1 if payment == 'Thẻ tín dụng' else 0
+    # Chuyển khoản ngân hàng → tất cả dummy = 0 → Bank transfer (automatic) (đúng)
 
     # ---------------------
-    # Các biến số
+    # Các biến số (giữ nguyên)
     # ---------------------
     df['tenure'] = df['tenure']
     df['MonthlyCharges'] = df['MonthlyCharges']
     df['TotalCharges'] = df['TotalCharges']
 
     # ---------------------
-    # Chỉ giữ cột model cần
+    # Chỉ giữ đúng các cột model mong đợi
     # ---------------------
     df_final = df[EXPECTED_COLUMNS]
 
     return df_final
+

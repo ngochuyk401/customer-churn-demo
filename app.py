@@ -157,10 +157,10 @@ p1, p2, p3 = st.columns(3)
 payment_method = p1.selectbox(
     "Hình thức thanh toán",
     [
-        "Hóa đơn điện tử",
-        "Hóa đơn bưu điện",
-        "Chuyển khoản ngân hàng",
-        "Thẻ tín dụng"
+        "Hóa đơn điện tử",          # Electronic check
+        "Hóa đơn bưu điện",         # Mailed check
+        "Chuyển khoản ngân hàng",   # Bank transfer (automatic)
+        "Thẻ tín dụng"              # Credit card (automatic)
     ]
 )
 
