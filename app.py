@@ -1,4 +1,6 @@
 import streamlit as st
+from preprocessing.preprocess import preprocess_input
+
 
 # =========================
 # CẤU HÌNH TRANG (SỬA ICON TAB)
@@ -182,5 +184,31 @@ st.markdown("")
 # NÚT DỰ ĐOÁN
 # =========================
 if st.button("🔍 Dự đoán"):
-    st.success(f"Đã gửi yêu cầu dự đoán bằng mô hình **{model_name}**")
-    st.info("Kết quả dự đoán sẽ được hiển thị khi tích hợp mô hình học máy.")
+
+    input_data = {
+        'gender': gender,
+        'SeniorCitizen': senior,
+        'Partner': partner,
+        'Dependents': dependents,
+        'tenure': tenure,
+        'PhoneService': phone,
+        'MultipleLines': multiple_lines,
+        'InternetService': internet,
+        'OnlineSecurity': online_security,
+        'OnlineBackup': online_backup,
+        'DeviceProtection': device_protection,
+        'TechSupport': tech_support,
+        'StreamingTV': streaming_tv,
+        'StreamingMovies': streaming_movies,
+        'Contract': contract,
+        'PaperlessBilling': paperless,
+        'PaymentMethod': payment_method,
+        'MonthlyCharges': monthly_charges,
+        'TotalCharges': total_charges
+    }
+
+    processed_df = preprocess_input(input_data)
+
+    st.subheader("📄 Dữ liệu sau tiền xử lý")
+    st.dataframe(processed_df)
+
