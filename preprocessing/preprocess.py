@@ -53,4 +53,30 @@ def preprocess_input(data: dict) -> pd.DataFrame:
         drop_first=True
     )
 
+    df = align_columns(df)
+
     return df
+
+EXPECTED_COLUMNS = [
+    'SeniorCitizen', 'tenure', 'MonthlyCharges', 'TotalCharges',
+    'gender_Male', 'Partner_Yes', 'Dependents_Yes', 'PhoneService_Yes',
+    'MultipleLines_No phone service', 'MultipleLines_Yes',
+    'InternetService_Fiber optic', 'InternetService_No',
+    'OnlineSecurity_No internet service', 'OnlineSecurity_Yes',
+    'OnlineBackup_No internet service', 'OnlineBackup_Yes',
+    'DeviceProtection_No internet service', 'DeviceProtection_Yes',
+    'TechSupport_No internet service', 'TechSupport_Yes',
+    'StreamingTV_No internet service', 'StreamingTV_Yes',
+    'StreamingMovies_No internet service', 'StreamingMovies_Yes',
+    'Contract_One year', 'Contract_Two year', 'PaperlessBilling_Yes',
+    'PaymentMethod_Credit card (automatic)',
+    'PaymentMethod_Electronic check', 'PaymentMethod_Mailed check'
+]
+
+# Fix cột thiếu
+def align_columns(df):
+    for col in EXPECTED_COLUMNS:
+        if col not in df.columns:
+            df[col] = 0
+    return df[EXPECTED_COLUMNS]
+
