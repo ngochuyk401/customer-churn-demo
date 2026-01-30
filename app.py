@@ -16,8 +16,8 @@ st.set_page_config(
 # SIDEBAR
 # =========================
 st.sidebar.image(
-    "https://cdn-icons-png.flaticon.com/512/3059/3059446.png",
-    width=120
+    "https://upload.wikimedia.org/wikipedia/commons/6/63/FPT_logo_2010.svg",
+    width=160
 )
 
 st.sidebar.subheader("⚙️ Chọn mô hình")
@@ -29,111 +29,145 @@ model_name = st.sidebar.selectbox(
 
 st.sidebar.markdown("---")
 
-st.sidebar.subheader("📘 Hướng dẫn")
+st.sidebar.subheader("📘 Hướng dẫn sử dụng")
 st.sidebar.markdown("""
-1. Chọn mô hình  
+1. Chọn mô hình học máy  
 2. Nhập thông tin khách hàng  
-3. Nhấn **Dự đoán**  
+3. Nhấn **Dự đoán** để xem kết quả  
 """)
 
 # =========================
 # TITLE
 # =========================
-st.markdown(
-    "<h1 style='text-align:center'>📊 DỰ ĐOÁN KHÁCH HÀNG RỜI BỎ DỊCH VỤ</h1>",
-    unsafe_allow_html=True
-)
+col_title1, col_title2 = st.columns([1, 10])
+
+with col_title1:
+    st.image(
+        "https://cdn-icons-png.flaticon.com/512/1041/1041916.png",
+        width=60
+    )
+
+with col_title2:
+    st.markdown(
+        "<h1>DỰ ĐOÁN KHÁCH HÀNG RỜI BỎ DỊCH VỤ</h1>",
+        unsafe_allow_html=True
+    )
+
 st.markdown("---")
 
 # =========================
 # THÔNG TIN KHÁCH HÀNG
 # =========================
-st.subheader("🧾 Thông tin khách hàng")
+st.markdown(
+    "<div style='background-color:#e8f4fa;padding:15px;border-radius:10px'>"
+    "<h3>🧾 Thông tin khách hàng</h3>",
+    unsafe_allow_html=True
+)
 
 c1, c2, c3, c4, c5 = st.columns(5)
 
-gender = c1.selectbox("Giới tính", ["Male", "Female"])
-senior = c2.selectbox("Khách hàng cao tuổi", [0, 1])
-partner = c3.selectbox("Có người thân", ["Yes", "No"])
-dependents = c4.selectbox("Có người phụ thuộc", ["Yes", "No"])
-tenure = c5.number_input("Thời gian sử dụng (tháng)", 0, 72, 1)
+gender = c1.selectbox("Giới tính", ["Nam", "Nữ"])
+senior = c2.selectbox("Khách hàng cao tuổi", ["Không", "Có"])
+partner = c3.selectbox("Có người thân", ["Không", "Có"])
+dependents = c4.selectbox("Có người phụ thuộc", ["Không", "Có"])
+tenure = c5.number_input(
+    "Thời gian sử dụng (tháng)",
+    min_value=0,
+    max_value=72,
+    step=5,
+    value=12
+)
 
 c6, c7, c8, c9, c10 = st.columns(5)
 
-phone = c6.selectbox("Dịch vụ điện thoại", ["Yes", "No"])
+phone = c6.selectbox("Dịch vụ điện thoại", ["Có", "Không"])
 multiple_lines = c7.selectbox(
     "Nhiều đường dây",
-    ["Yes", "No", "No phone service"]
+    ["Không", "Có", "Không có DV điện thoại"]
 )
 internet = c8.selectbox(
     "Internet",
-    ["DSL", "Fiber optic", "No"]
+    ["DSL", "Cáp quang", "Không sử dụng"]
 )
 contract = c9.selectbox(
     "Hợp đồng",
-    ["Month-to-month", "One year", "Two year"]
+    ["Theo tháng", "1 năm", "2 năm"]
 )
 paperless = c10.selectbox(
     "Hóa đơn điện tử",
-    ["Yes", "No"]
+    ["Có", "Không"]
 )
+
+st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("")
 
 # =========================
 # DỊCH VỤ GIA TĂNG
 # =========================
-st.subheader("📡 Dịch vụ Internet")
+st.markdown(
+    "<div style='background-color:#eaf7ee;padding:15px;border-radius:10px'>"
+    "<h3>📡 Dịch vụ gia tăng</h3>",
+    unsafe_allow_html=True
+)
 
 d1, d2, d3 = st.columns(3)
 
 online_security = d1.selectbox(
     "Bảo mật trực tuyến",
-    ["Yes", "No", "No internet service"]
+    ["Không", "Có", "Không có Internet"]
 )
 online_backup = d2.selectbox(
     "Sao lưu trực tuyến",
-    ["Yes", "No", "No internet service"]
+    ["Không", "Có", "Không có Internet"]
 )
 device_protection = d3.selectbox(
     "Bảo vệ thiết bị",
-    ["Yes", "No", "No internet service"]
+    ["Không", "Có", "Không có Internet"]
 )
 
 d4, d5, d6 = st.columns(3)
 
 tech_support = d4.selectbox(
     "Hỗ trợ kỹ thuật",
-    ["Yes", "No", "No internet service"]
+    ["Không", "Có", "Không có Internet"]
 )
 streaming_tv = d5.selectbox(
     "Truyền hình trực tuyến",
-    ["Yes", "No", "No internet service"]
+    ["Không", "Có", "Không có Internet"]
 )
 streaming_movies = d6.selectbox(
     "Phim trực tuyến",
-    ["Yes", "No", "No internet service"]
+    ["Không", "Có", "Không có Internet"]
 )
+
+st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("")
 
 # =========================
 # THANH TOÁN
 # =========================
-st.subheader("💰 Thanh toán")
+st.markdown(
+    "<div style='background-color:#eef3fb;padding:15px;border-radius:10px'>"
+    "<h3>💰 Thông tin thanh toán</h3>",
+    unsafe_allow_html=True
+)
 
 p1, p2, p3 = st.columns(3)
 
 payment_method = p1.selectbox(
     "Hình thức thanh toán",
     [
-        "Electronic check",
-        "Mailed check",
-        "Bank transfer (automatic)",
-        "Credit card (automatic)"
+        "Hóa đơn điện tử",
+        "Hóa đơn bưu điện",
+        "Chuyển khoản ngân hàng",
+        "Thẻ tín dụng"
     ]
 )
 
 monthly_charges = p2.number_input(
     "Chi phí hàng tháng",
     min_value=0.0,
-    step=5.0,
+    step=10.0,
     value=70.0
 )
 
@@ -141,19 +175,17 @@ total_charges = p3.number_input(
     "Tổng chi phí",
     min_value=0.0,
     step=50.0,
-    value=100.0
+    value=1000.0
 )
 
-st.markdown("---")
+st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("")
 
 # =========================
-# DỰ ĐOÁN
+# NÚT DỰ ĐOÁN
 # =========================
 if st.button("🔍 Dự đoán"):
 
-    # =========================
-    # 1. Gom dữ liệu đầu vào
-    # =========================
     input_data = {
         'gender': gender,
         'SeniorCitizen': senior,
@@ -176,43 +208,27 @@ if st.button("🔍 Dự đoán"):
         'TotalCharges': total_charges
     }
 
-    # =========================
-    # 2. Hiển thị dữ liệu nhập
-    # =========================
-    with st.expander("🧾 Dữ liệu đã nhập"):
+    with st.expander("🧾 Thông tin khách hàng đã nhập"):
         st.dataframe(pd.DataFrame([input_data]))
 
-    # =========================
-    # 3. Tiền xử lý
-    # =========================
     processed_df = preprocess_input(input_data)
 
-    with st.expander("📄 Dữ liệu sau tiền xử lý"):
+    with st.expander("📄 Dữ liệu sau tiền xử lý (đầu vào mô hình)"):
         st.dataframe(processed_df)
 
-    # =========================
-    # 4. Load model & predict
-    # =========================
     model = load_model(model_name)
     prediction = model.predict(processed_df)[0]
 
-    # =========================
-    # 5. Kết quả
-    # =========================
-    st.subheader("📊 Kết quả")
+    st.subheader("📊 Kết quả dự đoán")
 
     if prediction == 1:
-        st.error("⚠️ Khách hàng **CÓ NGUY CƠ RỜI BỎ** dịch vụ")
-        st.markdown("""
-        **Khuyến nghị:**
-        - Cung cấp ưu đãi giá
-        - Nâng cao hỗ trợ kỹ thuật
-        - Chăm sóc khách hàng chủ động
-        """)
+        st.error("⚠️ Khách hàng CÓ NGUY CƠ rời bỏ dịch vụ")
+        st.write(
+            "💡 **Khuyến nghị:** Doanh nghiệp nên xem xét ưu đãi, chăm sóc khách hàng "
+            "hoặc hỗ trợ kỹ thuật để giữ chân khách hàng."
+        )
     else:
-        st.success("✅ Khách hàng **KHÔNG có nguy cơ rời bỏ**")
-        st.markdown("""
-        **Khuyến nghị:**
-        - Duy trì chất lượng dịch vụ
-        - Tiếp tục chính sách hiện tại
-        """)
+        st.success("✅ Khách hàng KHÔNG có nguy cơ rời bỏ dịch vụ")
+        st.write(
+            "💡 **Khuyến nghị:** Tiếp tục duy trì chất lượng dịch vụ và chính sách chăm sóc hiện tại."
+        )
