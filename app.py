@@ -4,7 +4,7 @@ import pandas as pd
 from models.model_loader import load_model
 
 # =========================
-# CẤU HÌNH TRANG (SỬA ICON TAB)
+# CẤU HÌNH TRANG
 # =========================
 st.set_page_config(
     page_title="Dự đoán khách hàng rời bỏ dịch vụ",
@@ -236,15 +236,15 @@ if st.button("🔍 Dự đoán"):
     # Lấy xác suất churn (lớp 1)
     try:
         proba = model.predict_proba(processed_df)[0]  # [prob lớp 0, prob lớp 1]
-        churn_proba = proba[1]                       # Xác suất churn
+        churn_proba = proba[1]                        # Xác suất churn
         churn_proba_percent = churn_proba * 100
     except AttributeError:
         churn_proba = None
         churn_proba_percent = None
-        st.warning("Mô hình hiện tại không hỗ trợ tính xác suất (predict_proba). Sử dụng nhãn mặc định.")
+        st.warning("Mô hình hiện tại không hỗ trợ tính xác suất. Sử dụng nhãn mặc định.")
 
     # Threshold tùy chỉnh
-    threshold = 0.35 # Thấp hơn → nhạy hơn với churn (tăng Recall), nhưng có thể tăng false positive
+    threshold = 0.3
 
     # Quyết định nhãn dựa trên threshold
     if churn_proba is not None:
@@ -259,27 +259,26 @@ if st.button("🔍 Dự đoán"):
 
     if prediction == 1:
         st.error("⚠️ Khách hàng **CÓ NGUY CƠ** rời bỏ dịch vụ")
-        if churn_proba_percent is not None:
-            st.write(f"**Xác suất churn:** {churn_proba_percent:.1f}% (vượt ngưỡng {threshold*100:.0f}%)")
         st.write(
             "💡 **Khuyến nghị:** Doanh nghiệp nên xem xét các biện pháp giữ chân "
             "như ưu đãi giá cước, chăm sóc khách hàng hoặc hỗ trợ kỹ thuật."
         )
+        if churn_proba_percent is not None:
+            st.write(f"**Xác suất churn:** {churn_proba_percent:.1f}%")
     else:
         st.success("✅ Khách hàng **KHÔNG** có nguy cơ rời bỏ dịch vụ")
-        if churn_proba_percent is not None:
-            st.write(f"**Xác suất churn:** {churn_proba_percent:.1f}% (dưới ngưỡng {threshold*100:.0f}%)")
         st.write(
             "💡 **Khuyến nghị:** Tiếp tục duy trì chất lượng dịch vụ và chính sách chăm sóc hiện tại."
         )
+        if churn_proba_percent is not None:
+            st.write(f"**Xác suất churn:** {churn_proba_percent:.1f}%")
 
-    # Hiển thị thêm thông tin chi tiết (luôn hiển thị nếu có proba)
+    # Hiển thị chi tiết xác suất và ngưỡng (chỉ một lần, ở cuối)
     if churn_proba_percent is not None:
         st.markdown(
             f"**Chi tiết xác suất:** Không churn: {proba[0]*100:.1f}% | Churn: {churn_proba_percent:.1f}%  \n"
             f"**Ngưỡng quyết định:** {threshold*100:.0f}%"
         )
-
 
 
     # # =========================

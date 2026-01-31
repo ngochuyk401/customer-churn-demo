@@ -22,7 +22,7 @@ EXPECTED_COLUMNS = [
 def preprocess_input(data: dict) -> pd.DataFrame:
     """
     Chuyển input từ form (dict tiếng Việt) thành DataFrame dummy đúng với model.
-    Mapping phải khớp chính xác với selectbox trong app.py.
+    Mapping với selectbox trong app.py.
     """
     df = pd.DataFrame([data])
 
@@ -32,7 +32,7 @@ def preprocess_input(data: dict) -> pd.DataFrame:
     df['gender_Male'] = 1 if df.loc[0, 'gender'] == 'Nam' else 0
 
     # ---------------------
-    # Yes/No đơn giản
+    # Yes/No
     # ---------------------
     yes_cols = ['Partner', 'Dependents', 'PhoneService', 'PaperlessBilling']
     for col in yes_cols:
@@ -56,7 +56,7 @@ def preprocess_input(data: dict) -> pd.DataFrame:
     df['InternetService_No'] = 1 if df.loc[0, 'InternetService'] == 'Không' else 0
 
     # ---------------------
-    # Các dịch vụ Internet (OnlineSecurity, OnlineBackup, ...)
+    # Các dịch vụ Internet
     # ---------------------
     internet_services = [
         'OnlineSecurity', 'OnlineBackup', 'DeviceProtection',
@@ -74,26 +74,26 @@ def preprocess_input(data: dict) -> pd.DataFrame:
     # ---------------------
     df['Contract_One year'] = 1 if df.loc[0, 'Contract'] == '1 năm' else 0
     df['Contract_Two year'] = 1 if df.loc[0, 'Contract'] == '2 năm' else 0
-    # "Theo tháng" → cả hai dummy = 0 → Month-to-month (đúng, vì drop_first=True)
+    # "Theo tháng" → cả hai dummy = 0 → Month-to-month
 
     # ---------------------
-    # PaymentMethod - PHẦN QUAN TRỌNG NHẤT ĐÃ SỬA
+    # PaymentMethod
     # ---------------------
     payment = df.loc[0, 'PaymentMethod']
     df['PaymentMethod_Electronic check'] = 1 if payment == 'Hóa đơn điện tử' else 0
     df['PaymentMethod_Mailed check'] = 1 if payment == 'Hóa đơn bưu điện' else 0
     df['PaymentMethod_Credit card (automatic)'] = 1 if payment == 'Thẻ tín dụng' else 0
-    # Chuyển khoản ngân hàng → tất cả dummy = 0 → Bank transfer (automatic) (đúng)
+    # Chuyển khoản ngân hàng → tất cả dummy = 0 → Bank transfer (automatic)
 
     # ---------------------
-    # Các biến số (giữ nguyên)
+    # Các biến số
     # ---------------------
     df['tenure'] = df['tenure']
     df['MonthlyCharges'] = df['MonthlyCharges']
     df['TotalCharges'] = df['TotalCharges']
 
     # ---------------------
-    # Chỉ giữ đúng các cột model mong đợi
+    # Giữ đúng các cột model
     # ---------------------
     df_final = df[EXPECTED_COLUMNS]
 
